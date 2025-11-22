@@ -122,10 +122,10 @@ void cargarDesdeCSV(const char *archivo, ListaRopa *lista) {
 
 // Definición de las rutas de imagen 
 const gchar *IMAGE_PATHS[] = {
-    "/home/edu-gar/Escritorio/ProyectoSistemasOperativos/imagenes/imagenesCarrusel/chamarra.jpg", // IMAGEN 1
-    "/home/edu-gar/Escritorio/ProyectoSistemasOperativos/imagenes/imagenesCarrusel/jerseyAmericano.jpg", // IMAGEN 2
-    "/home/edu-gar/Escritorio/ProyectoSistemasOperativos/imagenes/imagenesCarrusel/chamarraMezclilla.jpg",  // IMAGEN 3
-    "/home/edu-gar/Escritorio/ProyectoSistemasOperativos/imagenes/imagenesCarrusel/sudaderaCafe.jpg",  // IMAGEN 4
+    "./imagenes/imagenesCarrusel/chamarra.jpg", // IMAGEN 1
+    "./imagenes/imagenesCarrusel/jerseyAmericano.jpg", // IMAGEN 2
+    "./imagenes/imagenesCarrusel/chamarraMezclilla.jpg",  // IMAGEN 3
+    "./imagenes/imagenesCarrusel/sudaderaCafe.jpg",  // IMAGEN 4
 };
 const gchar *IMAGE_NAMES[] = { "img_1", "img_2", "img_3", "img_4" };
 const int NUM_IMAGES = G_N_ELEMENTS(IMAGE_PATHS);
