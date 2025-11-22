@@ -272,88 +272,41 @@ GtkWidget *create_content_label(const gchar *text, const gchar *css_class) {
 }
 
 
-//PAra imagen desde Google Sheets
-
-
-
-struct MemoryStruct {
-    char *memory;
-    size_t size;
-};
-
-// Callback para entregar a curl la memoria
-static size_t WriteMemoryCallback(void *contents, size_t size, size_t nmemb, void *userp) {
-    size_t realsize = size * nmemb;
-    struct MemoryStruct *mem = (struct MemoryStruct *)userp;
-
-    char *ptr = realloc(mem->memory, mem->size + realsize + 1);
-    if(ptr == NULL) return 0;
-
-    mem->memory = ptr;
-    memcpy(&(mem->memory[mem->size]), contents, realsize);
-    mem->size += realsize;
-    mem->memory[mem->size] = 0;
-
-    return realsize;
-}
-
-// Descargar URL → Pixbuf
-GdkPixbuf* load_pixbuf_from_url(const char *url) {
-
-    CURL *curl_handle;
-    CURLcode res;
-
-    struct MemoryStruct chunk;
-    chunk.memory = malloc(1);
-    chunk.size = 0;
-
-    curl_global_init(CURL_GLOBAL_DEFAULT);
-    curl_handle = curl_easy_init();
-
-    if (!curl_handle)
-        return NULL;
-
-    curl_easy_setopt(curl_handle, CURLOPT_URL, url);
-    curl_easy_setopt(curl_handle, CURLOPT_WRITEFUNCTION, WriteMemoryCallback);
-    curl_easy_setopt(curl_handle, CURLOPT_WRITEDATA, (void *)&chunk);
-    curl_easy_setopt(curl_handle, CURLOPT_FOLLOWLOCATION, 1L);
-
-    res = curl_easy_perform(curl_handle);
-
-    if (res != CURLE_OK) {
-        fprintf(stderr, "Error descargando %s: %s\n", url, curl_easy_strerror(res));
-        curl_easy_cleanup(curl_handle);
-        free(chunk.memory);
-        return NULL;
-    }
-
-    curl_easy_cleanup(curl_handle);
-
-    GInputStream *stream = g_memory_input_stream_new_from_data(chunk.memory, chunk.size, g_free);
-    GdkPixbuf *pixbuf = gdk_pixbuf_new_from_stream(stream, NULL, NULL);
-
-    g_object_unref(stream);
-
-    return pixbuf;
-}
 
 
 //Creamos cada celda del grid de ropa
-GtkWidget* create_cell(Prenda *prenda) {
+GtkWidget* create_cell(Prenda *prenda, int index) {
 
     GtkWidget *event = gtk_event_box_new();
     GtkWidget *box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 5);
     gtk_container_add(GTK_CONTAINER(event), box);
-    GdkPixbuf *pixbuf = load_pixbuf_from_url(prenda->urlImagen);
 
-    if (pixbuf) {
-        pixbuf = gdk_pixbuf_new_from_file_at_scale("/home/edu-gar/Escritorio/ProyectoSistemasOperativos/p.jpg", 120, 120, TRUE, NULL);
+    // Ruta armada: imagenes/imagen_001.jpg
+    char rutaImagen[256];
+    snprintf(rutaImagen, sizeof(rutaImagen),
+             "./imagenes/imagenesHombre/imagen_%03d.jpg", index);
+
+    // Cargar imagen escalada
+    GdkPixbuf *pixbuf = gdk_pixbuf_new_from_file_at_scale(
+                            rutaImagen,
+                            120, 120,
+                            TRUE,
+                            NULL
+                        );
+
+    if (!pixbuf) {
+        // Si falla pone una imagen por defecto
+        pixbuf = gdk_pixbuf_new_from_file_at_scale(
+                    "imagenes/default.jpg",
+                    120, 120,
+                    TRUE,
+                    NULL
+                );
     }
 
     GtkWidget *img = gtk_image_new_from_pixbuf(pixbuf);
     gtk_box_pack_start(GTK_BOX(box), img, FALSE, FALSE, 0);
 
-    // TEXTO
     GtkWidget *label = gtk_label_new(prenda->nombre);
     gtk_box_pack_start(GTK_BOX(box), label, FALSE, FALSE, 0);
 
@@ -369,31 +322,33 @@ GtkWidget* create_scrolleable_grid_prendas(ListaRopa *lista, int columnas) {
         return gtk_label_new("No hay prendas para mostrar");
     }
 
-    // Contenedor con scroll
     GtkWidget *scroll = gtk_scrolled_window_new(NULL, NULL);
     gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scroll),
-                                   GTK_POLICY_NEVER,        // scroll horizontal fijo
-                                   GTK_POLICY_AUTOMATIC);   // scroll vertical automático
+                                   GTK_POLICY_NEVER,
+                                   GTK_POLICY_AUTOMATIC);
 
-    // Grid interno
     GtkWidget *grid = gtk_grid_new();
     gtk_grid_set_row_spacing(GTK_GRID(grid), 10);
     gtk_grid_set_column_spacing(GTK_GRID(grid), 10);
-    gtk_widget_set_halign(grid, GTK_ALIGN_CENTER);   // horizontal
-    gtk_widget_set_valign(grid, GTK_ALIGN_CENTER);   // vertical
+    gtk_widget_set_halign(grid, GTK_ALIGN_CENTER);
+    gtk_widget_set_valign(grid, GTK_ALIGN_CENTER);
+    
+    gtk_widget_set_size_request(grid, 600, -1);
+    gtk_widget_set_hexpand(grid, FALSE);
 
     gtk_container_add(GTK_CONTAINER(scroll), grid);
 
-    // Recorrer la lista y generar celdas
     Prenda *actual = lista->raiz;
     int r = 0, c = 0;
+    int index = 1;   // <- iniciamos en 1 = imagen_001.jpg
 
     while (actual != NULL) {
 
-        GtkWidget *cell = create_cell(actual);
+        GtkWidget *cell = create_cell(actual, index);
         gtk_grid_attach(GTK_GRID(grid), cell, c, r, 1, 1);
 
         actual = actual->siguiente;
+        index++;   // siguiente imagen
 
         c++;
         if (c >= columnas) {
@@ -404,11 +359,6 @@ GtkWidget* create_scrolleable_grid_prendas(ListaRopa *lista, int columnas) {
 
     return scroll;
 }
-
-
-
-
-
 
 
 
@@ -634,7 +584,7 @@ gtk_box_pack_start(GTK_BOX(navbar_box), btn_carrito, FALSE, FALSE, 0);
     gtk_stack_add_named(GTK_STACK(stack), gridCarrusel, "page_novedades");
     
     // --- 2. MUJER Sub-páginas (Aplicando clase 'mujer') ---
-    //gtk_stack_add_named(GTK_STACK(stack), create_scrolleable_grid_prendas(listaActual, 3), "page_mujer_camisas");
+    gtk_stack_add_named(GTK_STACK(stack), create_scrolleable_grid_prendas(listaActual, 3), "page_mujer_camisas");
     // gtk_stack_add_named(GTK_STACK(stack), create_grid_scrolleable(10,10), "page_mujer_faldas");
     // gtk_stack_add_named(GTK_STACK(stack), create_grid_scrolleable(10,10), "page_mujer_accesorios");
 
