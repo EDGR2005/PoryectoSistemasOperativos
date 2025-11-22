@@ -616,6 +616,11 @@ activate (GtkApplication* app,
     GtkWidget *btn_ofertas = create_nav_button(stack, "OFERTAS HOT", "page_ofertas");
     gtk_box_pack_start(GTK_BOX(navbar_box), btn_ofertas, FALSE, FALSE, 0);
 
+    GtkWidget *btn_carrito = create_nav_button(stack, "🛒", "page_carrito");
+gtk_box_pack_start(GTK_BOX(navbar_box), btn_carrito, FALSE, FALSE, 0);
+
+
+
 
     // ==========================================
     // 8. DEFINIR PÁGINAS FINALES DEL STACK PRINCIPAL
@@ -629,7 +634,7 @@ activate (GtkApplication* app,
     gtk_stack_add_named(GTK_STACK(stack), gridCarrusel, "page_novedades");
     
     // --- 2. MUJER Sub-páginas (Aplicando clase 'mujer') ---
-    gtk_stack_add_named(GTK_STACK(stack), create_scrolleable_grid_prendas(listaActual, 3), "page_mujer_camisas");
+    //gtk_stack_add_named(GTK_STACK(stack), create_scrolleable_grid_prendas(listaActual, 3), "page_mujer_camisas");
     // gtk_stack_add_named(GTK_STACK(stack), create_grid_scrolleable(10,10), "page_mujer_faldas");
     // gtk_stack_add_named(GTK_STACK(stack), create_grid_scrolleable(10,10), "page_mujer_accesorios");
 
@@ -643,6 +648,40 @@ activate (GtkApplication* app,
     GtkWidget *page_ofertas = create_content_label("¡Grandes OFERTAS HOT!", "alerta");
     gtk_stack_add_named(GTK_STACK(stack), page_ofertas, "page_ofertas");
 
+    // ==========================================
+    // 9. PÁGINA DEL CARRO DE COMPRAS
+    // ==========================================
+
+    // Contenedor principal del carrito
+    GtkWidget *carrito_box = gtk_box_new(GTK_ORIENTATION_VERTICAL, 20);
+    gtk_widget_set_name(carrito_box, "page_carrito");
+    gtk_widget_set_valign(carrito_box, GTK_ALIGN_START);
+    gtk_widget_set_halign(carrito_box, GTK_ALIGN_CENTER);
+
+    // Título
+    GtkWidget *label_carrito = gtk_label_new("🛒  CARRITO DE COMPRAS");
+    gtk_style_context_add_class(
+        gtk_widget_get_style_context(label_carrito),
+        "titulo-principal"
+    );
+    gtk_box_pack_start(GTK_BOX(carrito_box), label_carrito, FALSE, FALSE, 10);
+
+    // Lista de productos (por ahora vacía)
+    GtkWidget *lista_carrito = gtk_box_new(GTK_ORIENTATION_VERTICAL, 10);
+    gtk_widget_set_name(lista_carrito, "contenedor_carrito");
+
+    gtk_box_pack_start(GTK_BOX(carrito_box), lista_carrito, FALSE, FALSE, 10);
+
+    // Botón pagar
+    GtkWidget *btn_pagar = gtk_button_new_with_label("PAGAR");
+    gtk_style_context_add_class(
+        gtk_widget_get_style_context(btn_pagar),
+        "boton-principal"
+    );
+    gtk_box_pack_start(GTK_BOX(carrito_box), btn_pagar, FALSE, FALSE, 10);
+
+    // Agregar la página al Stack
+    gtk_stack_add_named(GTK_STACK(stack), carrito_box, "page_carrito");
 
     gtk_widget_show_all(window);
     // Establecer NOVEDADES como la página inicial
