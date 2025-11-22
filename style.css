@@ -1,0 +1,139 @@
+/* 1. Fondo principal */
+window {
+    background-color: #FAFAFA;
+}
+
+/* ----------------------------------------------------- */
+/* ** ESTILOS DE NAVEGACIÓN PERSONALIZADA (GtkBox y GtkMenuButton) ** */
+/* ----------------------------------------------------- */
+
+/* Contenedor de la barra de navegación */
+.navbar {
+    background-color: #FFFFFF; /* Fondo blanco */
+    padding: 15px 0;
+    border-bottom: 2px solid #E0E0E0;
+    margin-bottom: 10px;
+}
+
+/* Botones simples y de menú en la navegación */
+.nav-button, .menu-nav-button {
+
+    padding: 10px 20px;
+    border: none;
+    background: none;
+    color: #444444;
+    transition: background-color 0.2s;
+}
+
+/* Efecto hover */
+.nav-button:hover, .menu-nav-button:hover {
+    background-color: #F5F5F5;
+    border-radius: 5px;
+}
+
+/* Estilo para los elementos del menú desplegable (GtkPopover) */
+.menu-item {
+    padding: 8px 15px;
+    background: #b1b1b4;
+    color: white;
+    border: none;
+
+}
+
+.menu-item:hover {
+    background-color: #E0E0FF; /* Azul claro al pasar el ratón */
+    color: #1E40FF;
+}
+
+
+/* ----------------------------------------------------- */
+/* ** ESTILOS DEL CARRUSEL ** */
+/* ----------------------------------------------------- */
+
+/* Contenedor principal del carrusel */
+#carrusel-principal {
+    padding: 20px;
+    margin: 10px;
+    border: 2px solid #5555FF; 
+    border-radius: 10px;
+    background-color: #F0F5FF; 
+}
+
+/* Estilo de los botones de flecha del carrusel */
+button#carrusel_control {
+    background-color: rgba(237, 43, 43, 0); /* Transparente */
+    background-image: none;
+    color: #CC0000;                     /* Texto rojo oscuro */
+    border: none;
+    font-weight: bold;
+    padding: 20px 10px;
+    border-radius: 5px;
+    min-width: 50px;
+    transition: background-color 0.2s;
+}
+
+button#carrusel_control:hover {
+    background-color: rgba(204, 0, 0, 0.1); /* Rojo semitransparente al pasar el mouse */
+    color: #CC0000;                       
+}
+
+/* GtkStackSwitcher */
+GtkStackSwitcher {
+    margin-top: 15px;
+    padding: 5px 15px;
+    border-radius: 5px;
+    background-color: #cf0a0a;
+    border: 1px solid #ffff00;
+}
+
+/* ----------------------------------------------------- */
+/* ** ESTILOS DE CONTENIDO DE PÁGINAS ** */
+/* ----------------------------------------------------- */
+
+/* Estilo para el Stack de contenido (marco general) */
+stack {
+    border: 1px solid #CCCCCC;
+    background-color: #EEEEEE;
+    /* Los min-height/width son necesarios para el preview */
+    min-height: 300px;
+    min-width: 500px; 
+}
+
+/* Estilo genérico para todos los labels de contenido (para centrar y dar tamaño) */
+label {
+    /* Color predeterminado para etiquetas sin clase específica */
+    color: #444444; 
+    
+}
+
+/* CLASES ESPECÍFICAS DE CONTENIDO */
+
+/* Estilo para la clase 'alerta' (OFERTAS HOT) */
+label.alerta {
+    background-color: #FFDDDD; 
+    color: #CC0000;          
+    border: 1px solid #FF5555;
+    padding: 10px;
+    font-weight: bold;
+    margin: 20px; 
+}
+
+/* Estilo para la clase 'hombre' */
+label.hombre {
+    background-color: #2d1af7; /* Azul */
+    color: #ffffff;          
+    border: 1px solid #505cfe;
+    padding: 10px;
+    font-weight: bold;
+    margin: 20px; 
+}
+
+/* Estilo para la clase 'mujer' */
+label.mujer {
+    background-color: #ff86ef; /* Rosa */
+    color: #ffffff;          
+    border: 1px solid #a702af;
+    padding: 10px;
+    font-weight: bold;
+    margin: 20px; 
+}
